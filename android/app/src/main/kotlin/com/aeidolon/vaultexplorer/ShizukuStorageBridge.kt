@@ -1,7 +1,7 @@
 package com.aeidolon.vaultexplorer
 
 import android.content.pm.PackageManager
-import dev.rikka.shizuku.Shizuku
+import rikka.shizuku.Shizuku
 import java.io.IOException
 
 /**
