@@ -4,7 +4,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://maven.shizuku.tools") }
+        maven { url = uri("https://maven.shizuku.works") }
     }
 }
 
