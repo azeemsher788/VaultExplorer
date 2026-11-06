@@ -353,6 +353,7 @@ private object ChannelMethods {
     const val SAF_COPY_FILE             = "safCopyFile"
     const val SAF_GET_REAL_PATH         = "safGetRealPath"
     const val GET_STORAGE_VOLUMES       = "getStorageVolumes"
+    const val ENABLE_SHIZUKU_RESTRICTED_STORAGE = "enableShizukuRestrictedStorage"
 }
 
 open class MainActivity : FlutterFragmentActivity() {
@@ -364,6 +365,7 @@ open class MainActivity : FlutterFragmentActivity() {
 
     protected val CHANNEL = "com.aeidolon.vaultexplorer/engine"
     private val DISGUISE_CHANNEL = "com.aeidolon.vaultexplorer/disguise_channel"
+    private val shizukuStorageBridge by lazy { ShizukuStorageBridge(packageName) }
     internal val ACTION_CHOOSER = "com.aeidolon.vaultexplorer.ACTION_CHOOSER"
     private var chooserReceiver: BroadcastReceiver? = null
     internal var methodChannel: MethodChannel? = null
@@ -1116,6 +1118,11 @@ open class MainActivity : FlutterFragmentActivity() {
                 ChannelMethods.CLEAR_SENSITIVE_CLIPBOARD_TEXT -> systemHandlers.handleClearSensitiveClipboardText(call, result)
                 ChannelMethods.HAS_ALL_FILES_ACCESS -> systemHandlers.handleHasAllFilesAccess(call, result)
                 ChannelMethods.REQUEST_ALL_FILES_ACCESS -> systemHandlers.handleRequestAllFilesAccess(call, result)
+                ChannelMethods.ENABLE_SHIZUKU_RESTRICTED_STORAGE -> {
+                    shizukuStorageBridge.enable { success ->
+                        runOnUiThread { result.success(success) }
+                    }
+                }
                 ChannelMethods.HAS_OVERLAY_PERMISSION -> systemHandlers.handleHasOverlayPermission(call, result)
                 ChannelMethods.REQUEST_OVERLAY_PERMISSION -> systemHandlers.handleRequestOverlayPermission(call, result)
                 ChannelMethods.HAS_UNRESTRICTED_BATTERY -> systemHandlers.handleHasUnrestrictedBattery(call, result)

@@ -33,6 +33,8 @@ abstract final class ChannelMethods {
   static const getMountedContainerFolders = 'getMountedContainerFolders';
   static const hasAllFilesAccess = 'hasAllFilesAccess';
   static const requestAllFilesAccess = 'requestAllFilesAccess';
+  static const enableShizukuRestrictedStorage =
+      'enableShizukuRestrictedStorage';
   static const hasOverlayPermission = 'hasOverlayPermission';
   static const requestOverlayPermission = 'requestOverlayPermission';
   static const hasUnrestrictedBattery = 'hasUnrestrictedBattery';
