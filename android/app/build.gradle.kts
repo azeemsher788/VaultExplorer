@@ -147,7 +147,7 @@ flutter {
 }
 
 dependencies {
-    implementation("dev.rikka.shizuku:api:13.1.5")
+    implementation("dev.rikka.shizuku:api:12.2.0")
     implementation("androidx.work:work-runtime-ktx:2.12.0")
     implementation("androidx.documentfile:documentfile:1.0.1")
     implementation("androidx.media3:media3-exoplayer:1.11.1")
