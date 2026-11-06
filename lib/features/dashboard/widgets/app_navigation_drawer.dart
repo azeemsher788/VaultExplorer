@@ -16,6 +16,7 @@ import 'package:vaultexplorer/data/models/mounted_container.dart';
 import 'package:vaultexplorer/data/models/vault_list_item.dart';
 import 'package:vaultexplorer/data/services/container_repository.dart';
 import 'package:vaultexplorer/data/services/session_lock_controller.dart';
+import 'package:vaultexplorer/data/services/vault_engine/channel_methods.dart';
 import 'package:vaultexplorer/features/authenticator/authenticator_screen.dart';
 import 'package:vaultexplorer/features/browser/models/file_category.dart';
 import 'package:vaultexplorer/features/browser/widgets/file_name_label.dart';
@@ -73,7 +74,31 @@ class AppNavigationDrawer extends ConsumerWidget {
         Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
+
     onSelectTab?.call(tabIndex);
+  }
+
+  Future<void> _enableRestrictedStorage(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final enabled = await ref
+        .read(vaultEngineChannelProvider)
+        .invokeMethod<bool>(
+          ChannelMethods.enableShizukuRestrictedStorage,
+        );
+    if (!context.mounted) return;
+    if (enabled == true) {
+      Navigator.pop(context);
+      onOpenLocalStorage?.call();
+    } else {
+      showAppSnackBar(
+        context,
+        message:
+            'Shizuku is unavailable or permission was denied. Start Shizuku and try again.',
+        tone: AppBannerTone.warning,
+      );
+    }
   }
 
   void _promptRename(
@@ -676,6 +701,25 @@ class AppNavigationDrawer extends ConsumerWidget {
                           onAddVault!();
                         },
                       ),
+                      ListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                        leading: Icon(Icons.lock_open_rounded, color: cs.primary),
+                        title: Text(
+                          'Open restricted storage with Shizuku',
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: cs.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: const Text(
+                          '/Android/data and /Android/obb',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        onTap: () => _enableRestrictedStorage(context, ref),
+                      ),
                   ],
 
                   // Bookmarks of unlocked vaults and available storage
@@ -854,6 +898,11 @@ class AppNavigationDrawer extends ConsumerWidget {
                           color: cs.primary,
                           fontWeight: FontWeight.bold,
                         ),
+                      ),
+                      subtitle: const Text(
+                        'SD, USB, cloud, FTP, SFTP/SSH, WebDAV providers',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       onTap: () async {
                         final notifier = ref.read(
